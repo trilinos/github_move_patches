@@ -1,0 +1,55 @@
+From 6c3c350d9b96637556120a6038b4991b9f42338c Mon Sep 17 00:00:00 2001
+From: James M. Willenbring <jmwille@sandia.gov>
+Date: Mon, 26 Oct 2015 20:52:43 -0600
+Subject: [PATCH 1/2] Adjusting the package list to account for move to GitHub
+
+Some packages are being retired and will be completely removed.
+Other packages will be moved to their own repositories and were
+added to the TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES list.
+---
+ PackagesList.cmake |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/PackagesList.cmake b/PackagesList.cmake
+index b843a82..b22bf85 100644
+--- a/PackagesList.cmake
++++ b/PackagesList.cmake
+@@ -110,13 +110,11 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
+   SCORECma              SCOREC/ma                         SS
+   SCOREC                SCOREC                            SS
+   Phalanx               packages/phalanx                  SS
+-  Phdmesh               packages/phdmesh                  EX # to be replaced by STK
+   NOX                   packages/nox                      PS
+   Moertel               packages/moertel                  PS
+   MueLu                 packages/muelu                    SS
+   Rythmos               packages/rythmos                  PS
+   MOOCHO                packages/moocho                   PS
+-  Aristos               packages/aristos                  EX
+   Stokhos               packages/stokhos                  SS
+   ROL                   packages/rol                      SS
+   Piro                  packages/piro                     SS
+@@ -148,6 +146,13 @@ TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(SCORECspr)
+ TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(SCORECapf_stk)
+ TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(SCORECapf_zoltan)
+ TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(SCORECma)
++TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(MOOCHO)
++TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(Optika)
++TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(Sundance)
++TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(Mesquite)
++TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(CTrilinos)
++TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(ForTrilinos)
++TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(WebTrilinos)
+ 
+ #
+ # Disable certain packages on certain platforms.
+@@ -159,7 +164,6 @@ TRIBITS_ALLOW_MISSING_EXTERNAL_PACKAGES(SCORECma)
+ 
+ TRIBITS_DISABLE_PACKAGE_ON_PLATFORMS(MOOCHO Windows)
+ TRIBITS_DISABLE_PACKAGE_ON_PLATFORMS(Phalanx Windows)
+-TRIBITS_DISABLE_PACKAGE_ON_PLATFORMS(Phdmesh Windows)
+ TRIBITS_DISABLE_PACKAGE_ON_PLATFORMS(PyTrilinos Windows)
+ TRIBITS_DISABLE_PACKAGE_ON_PLATFORMS(Sundance Windows)
+ TRIBITS_DISABLE_PACKAGE_ON_PLATFORMS(Tpetra Windows)
+-- 
+1.7.1
+

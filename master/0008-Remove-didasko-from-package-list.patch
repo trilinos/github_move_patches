@@ -1,0 +1,24 @@
+From 3d38b95505e31612c4a610b3868c6ec995bee1fa Mon Sep 17 00:00:00 2001
+From: Brent Perschbacher <bmpersc@sandia.gov>
+Date: Wed, 11 Nov 2015 12:45:19 -0700
+Subject: [PATCH] Remove didasko from package list.
+
+---
+ PackagesList.cmake |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/PackagesList.cmake b/PackagesList.cmake
+index 4752f80..1d7a745 100644
+--- a/PackagesList.cmake
++++ b/PackagesList.cmake
+@@ -124,7 +124,6 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
+   ForTrilinos           packages/ForTrilinos              EX
+   PyTrilinos            packages/PyTrilinos               SS
+   WebTrilinos           packages/WebTrilinos              EX # Should be SS
+-  Didasko               packages/didasko                  SS
+   NewPackage            packages/new_package              EX # Should be SS
+   Optika		packages/optika		          EX
+   Mesquite              packages/mesquite                 PS
+-- 
+1.7.1
+

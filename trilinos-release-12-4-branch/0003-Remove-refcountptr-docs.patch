@@ -1,0 +1,76 @@
+From b0c2badfa858487d6f2aadfe4d136e1ee7dc7dde Mon Sep 17 00:00:00 2001
+From: Brent Perschbacher <bmpersc@sandia.gov>
+Date: Thu, 29 Oct 2015 08:23:08 -0600
+Subject: [PATCH 1/4] Remove refcountptr docs
+
+---
+ doc/RefCountPtr/example/.gitignore      |    1 -
+ doc/RefCountPtr/example/README          |   22 ----------------------
+ doc/RefCountPtr/example/classicMakefile |   18 ------------------
+ 3 files changed, 0 insertions(+), 41 deletions(-)
+ delete mode 100644 doc/RefCountPtr/example/.gitignore
+ delete mode 100644 doc/RefCountPtr/example/README
+ delete mode 100644 doc/RefCountPtr/example/classicMakefile
+
+diff --git a/doc/RefCountPtr/example/.gitignore b/doc/RefCountPtr/example/.gitignore
+deleted file mode 100644
+index 78c5494..0000000
+--- a/doc/RefCountPtr/example/.gitignore
++++ /dev/null
+@@ -1 +0,0 @@
+-/*.exe
+diff --git a/doc/RefCountPtr/example/README b/doc/RefCountPtr/example/README
+deleted file mode 100644
+index 29e30fe..0000000
+--- a/doc/RefCountPtr/example/README
++++ /dev/null
+@@ -1,22 +0,0 @@
+-This directory contains working C++ code for the example programs
+-described in the RefCountPtr beginner's guide.  To build these
+-programs using g++ one just needs to set the environment variable
+-TRILINOS_BUILD to the base build directory containing a configured
+-version of the package Teuchos.
+-
+-After setting the environment variable TRILINOS_BUILD, the
+-example programs can be built as:
+-
+-  make -f classicMakefile all
+-
+-One can build only the original example program that uses raw C++
+-pointers (and contains memory deallocation errors) as:
+-
+-  make -f classicMakefile example_raw_cpp_pointers.exe
+-
+-One can also build only the refactored example program that uses
+-RefCountPtr<> smart pointers (which should be free of any memory
+-deallocation problems) as:
+-
+-  make -f classicMakefile example_ref_count_ptr.exe
+-	
+diff --git a/doc/RefCountPtr/example/classicMakefile b/doc/RefCountPtr/example/classicMakefile
+deleted file mode 100644
+index bcc56cb..0000000
+--- a/doc/RefCountPtr/example/classicMakefile
++++ /dev/null
+@@ -1,18 +0,0 @@
+-
+-TEUCHOS_BUILD_BASE=$(TRILINOS_BUILD)/packages/teuchos/src
+-TEUCHOS_SRC_BASE=../../../packages/teuchos/src
+-
+-COMMON = -DHAVE_CONFIG_H -I$(TEUCHOS_SRC_BASE) -I$(TEUCHOS_BUILD_BASE) \
+-  $(TEUCHOS_SRC_BASE)/Teuchos_Assert.cpp \
+-  $(TEUCHOS_SRC_BASE)/Teuchos_RCPNode.cpp \
+-  $(TEUCHOS_SRC_BASE)/Teuchos_Ptr.cpp \
+-  $(TEUCHOS_SRC_BASE)/Teuchos_TypeNameTraits.cpp
+-
+-all : example_raw_cpp_pointers.exe example_ref_count_ptr.exe
+-
+-example_raw_cpp_pointers.exe : example_raw_cpp_pointers.cpp example_get_args.hpp
+-	g++ -g -o0 $(COMMON) example_raw_cpp_pointers.cpp -o example_raw_cpp_pointers.exe
+-
+-example_ref_count_ptr.exe : example_ref_count_ptr.cpp example_get_args.hpp
+-	g++ -g -o0 $(COMMON) example_ref_count_ptr.cpp -o example_ref_count_ptr.exe
+-
+-- 
+1.7.1
+

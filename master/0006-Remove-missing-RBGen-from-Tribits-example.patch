@@ -1,0 +1,24 @@
+From 724dbba8acdc9005ade9b07725b738c5a9455555 Mon Sep 17 00:00:00 2001
+From: Brent Perschbacher <bmpersc@sandia.gov>
+Date: Thu, 29 Oct 2015 08:25:49 -0600
+Subject: [PATCH 4/4] Remove missing RBGen from Tribits example.
+
+---
+ .../examples/MockTrilinos/PackagesList.cmake       |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/cmake/tribits/examples/MockTrilinos/PackagesList.cmake b/cmake/tribits/examples/MockTrilinos/PackagesList.cmake
+index 9f43709..77186a1 100644
+--- a/cmake/tribits/examples/MockTrilinos/PackagesList.cmake
++++ b/cmake/tribits/examples/MockTrilinos/PackagesList.cmake
+@@ -20,7 +20,6 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
+   ML                  packages/ml                     PT
+   Belos               packages/belos                  ST
+   Stratimikos         packages/stratimikos            PT
+-  RBGen               packages/rbgen                  PT
+   Phalanx             packages/phalanx                ST
+   Panzer              packages/panzer                 ST
+   AlwaysMissing       AlwaysMissing                   PT
+-- 
+1.7.1
+
