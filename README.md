@@ -7,7 +7,9 @@ every patch due to the differences in the state of the code, nor was every
 branch made to work before the move to github. 
 
 These patches are being provided as a starting point in case it becomes
-necessary to support additional branches beyond those already updated.
+necessary to support additional branches beyond those already updated. It would
+be best to start with the patches to the branch closest to the branch you wish
+to update.
 
 
 The patches that have been applied to a branch will be in a directory with the
