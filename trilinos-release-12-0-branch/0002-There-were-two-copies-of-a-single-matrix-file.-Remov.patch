@@ -1,0 +1,110 @@
+From b4cb34b4e793ff2cfc2a63709bdddac57dca6c23 Mon Sep 17 00:00:00 2001
+From: "James M. Willenbring" <jmwille@sandia.gov>
+Date: Mon, 26 Oct 2015 21:32:15 -0600
+Subject: [PATCH 2/9] There were two copies of a single matrix file. Removed
+ one for GitHub move.
+
+The remaining file is tests/data/nsjac.mm, the removed file was
+examples/data/nsjac_test.mm.  The file from the tests directory
+is now copied to the examples build directory in place of the removed file.
+---
+ .../teko/examples/BasicExamples/inverse-factory-operator.cpp  |  2 +-
+ packages/teko/examples/BasicExamples/stratimikos-solve.cpp    |  2 +-
+ .../examples/BuildPreconditioner/example-driver-belos.cpp     |  2 +-
+ packages/teko/examples/BuildPreconditioner/example-driver.cpp |  2 +-
+ packages/teko/examples/CMakeLists.txt                         | 11 +++++++++--
+ packages/teko/examples/StridedSolve/strided_solve.cpp         |  2 +-
+ 6 files changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/packages/teko/examples/BasicExamples/inverse-factory-operator.cpp b/packages/teko/examples/BasicExamples/inverse-factory-operator.cpp
+index e7a2798..b8e4a4e 100644
+--- a/packages/teko/examples/BasicExamples/inverse-factory-operator.cpp
++++ b/packages/teko/examples/BasicExamples/inverse-factory-operator.cpp
+@@ -99,7 +99,7 @@ int main(int argc,char * argv[])
+ 
+    // Read in the matrix, store pointer as an RCP
+    Epetra_CrsMatrix * ptrA = 0;
+-   EpetraExt::MatrixMarketFileToCrsMatrix("../data/nsjac_test.mm",Comm,ptrA);
++   EpetraExt::MatrixMarketFileToCrsMatrix("../data/nsjac.mm",Comm,ptrA);
+    RCP<Epetra_CrsMatrix> A = rcp(ptrA);
+ 
+    // read in the RHS vector
+diff --git a/packages/teko/examples/BasicExamples/stratimikos-solve.cpp b/packages/teko/examples/BasicExamples/stratimikos-solve.cpp
+index dfb7dce..2730c94 100644
+--- a/packages/teko/examples/BasicExamples/stratimikos-solve.cpp
++++ b/packages/teko/examples/BasicExamples/stratimikos-solve.cpp
+@@ -94,7 +94,7 @@ int main(int argc,char * argv[])
+ 
+    // Read in the matrix, store pointer as an RCP
+    Epetra_CrsMatrix * ptrA = 0;
+-   EpetraExt::MatrixMarketFileToCrsMatrix("../data/nsjac_test.mm",Comm,ptrA);
++   EpetraExt::MatrixMarketFileToCrsMatrix("../data/nsjac.mm",Comm,ptrA);
+    RCP<Epetra_CrsMatrix> A = rcp(ptrA);
+ 
+    // read in the RHS vector
+diff --git a/packages/teko/examples/BuildPreconditioner/example-driver-belos.cpp b/packages/teko/examples/BuildPreconditioner/example-driver-belos.cpp
+index 64d412f..a709382 100644
+--- a/packages/teko/examples/BuildPreconditioner/example-driver-belos.cpp
++++ b/packages/teko/examples/BuildPreconditioner/example-driver-belos.cpp
+@@ -122,7 +122,7 @@ int main(int argc,char * argv[])
+ 
+    // read in the CRS matrix
+    RCP<NT> node = Tpetra::DefaultPlatform::getDefaultPlatform ().getNode ();
+-   RCP<TP_Op> Mat = Tpetra::MatrixMarket::Reader<TP_Crs>::readSparseFile("../data/nsjac_test.mm",
++   RCP<TP_Op> Mat = Tpetra::MatrixMarket::Reader<TP_Crs>::readSparseFile("../data/nsjac.mm",
+                                                                          Teuchos::DefaultComm<int>::getComm(),
+                                                                          node);
+ 
+diff --git a/packages/teko/examples/BuildPreconditioner/example-driver.cpp b/packages/teko/examples/BuildPreconditioner/example-driver.cpp
+index c531f3d..17a7bce 100644
+--- a/packages/teko/examples/BuildPreconditioner/example-driver.cpp
++++ b/packages/teko/examples/BuildPreconditioner/example-driver.cpp
+@@ -91,7 +91,7 @@ int main(int argc,char * argv[])
+ 
+    // Read in the matrix, store pointer as an RCP
+    Epetra_CrsMatrix * ptrA = 0;
+-   EpetraExt::MatrixMarketFileToCrsMatrix("../data/nsjac_test.mm",Comm,ptrA);
++   EpetraExt::MatrixMarketFileToCrsMatrix("../data/nsjac.mm",Comm,ptrA);
+    RCP<Epetra_CrsMatrix> A = rcp(ptrA);
+ 
+    // read in the RHS vector
+diff --git a/packages/teko/examples/CMakeLists.txt b/packages/teko/examples/CMakeLists.txt
+index 5c0e6ee..f6f0e3a 100644
+--- a/packages/teko/examples/CMakeLists.txt
++++ b/packages/teko/examples/CMakeLists.txt
+@@ -9,10 +9,17 @@ ENDIF()
+ 
+ 
+ TRIBITS_COPY_FILES_TO_BINARY_DIR(example_copyfiles
+-  SOURCE_FILES nsjac_test.mm
+-     nslhs_test.mm
++  SOURCE_FILES nslhs_test.mm
+      nsrhs_test.mm
+   SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data"
+   DEST_DIR "${CMAKE_CURRENT_BINARY_DIR}/data"
+   EXEDEPS StridedSolve_Example
+   )
++
++TRIBITS_COPY_FILES_TO_BINARY_DIR(example_copyfiles_from_tests
++  SOURCE_FILES nsjac.mm
++  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../tests/data"
++  DEST_DIR "${CMAKE_CURRENT_BINARY_DIR}/data"
++  EXEDEPS StridedSolve_Example
++  )
++
+diff --git a/packages/teko/examples/StridedSolve/strided_solve.cpp b/packages/teko/examples/StridedSolve/strided_solve.cpp
+index e955956..0ec10c7 100644
+--- a/packages/teko/examples/StridedSolve/strided_solve.cpp
++++ b/packages/teko/examples/StridedSolve/strided_solve.cpp
+@@ -154,7 +154,7 @@ int main(int argc,char * argv[])
+    Epetra_Vector * ptrx = 0;
+ 
+    std::cout << "Reading matrix market file" << std::endl;
+-   EpetraExt::MatrixMarketFileToCrsMatrix("../data/nsjac_test.mm",map,map,map,ptrA);
++   EpetraExt::MatrixMarketFileToCrsMatrix("../data/nsjac.mm",map,map,map,ptrA);
+    EpetraExt::MatrixMarketFileToVector("../data/nsrhs_test.mm",map,ptrf);
+    EpetraExt::MatrixMarketFileToVector("../data/nslhs_test.mm",map,ptrx);
+ 
+-- 
+2.1.3
+

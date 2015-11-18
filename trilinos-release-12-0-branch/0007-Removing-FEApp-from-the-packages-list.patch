@@ -1,0 +1,24 @@
+From 95e544e5be60bd96b6e2746bb9df2f840394bf88 Mon Sep 17 00:00:00 2001
+From: "James M. Willenbring" <jmwille@sandia.gov>
+Date: Thu, 29 Oct 2015 09:04:39 -0600
+Subject: [PATCH 7/9] Removing FEApp from the packages list.
+
+---
+ PackagesList.cmake | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/PackagesList.cmake b/PackagesList.cmake
+index 37468c4..11703f9 100644
+--- a/PackagesList.cmake
++++ b/PackagesList.cmake
+@@ -122,7 +122,6 @@ TRIBITS_REPOSITORY_DEFINE_PACKAGES(
+   MeshingGenie          packages/meshinggenie             EX
+   TrilinosCouplings     packages/trilinoscouplings        SS
+   Pike                  packages/pike                     SS
+-  FEApp                 demos/FEApp                       SS # Capability demonstration package
+   )
+ 
+ # Allow builds even if some packages are missing
+-- 
+2.1.3
+

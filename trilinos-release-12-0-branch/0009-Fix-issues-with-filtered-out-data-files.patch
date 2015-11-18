@@ -1,0 +1,295 @@
+From d2d21e0a67886996263b93c346a6842ea554b458 Mon Sep 17 00:00:00 2001
+From: Brent Perschbacher <bmpersc@sandia.gov>
+Date: Wed, 18 Nov 2015 10:27:33 -0700
+Subject: [PATCH 9/9] Fix issues with filtered out data files.
+
+Numerous copies and tests were relying on data files that have been filtered
+out. Fixing the copy of filtered files was to remove the filtered file from
+the copy command. The tests that depended on those files were disabled to
+prevent them from failing needlessly.
+---
+ .../belos/epetra/test/BlockGmres/CMakeLists.txt    |  5 +-
+ packages/belos/tpetra/test/BlockCG/CMakeLists.txt  | 10 +++-
+ .../MultiLevelPreconditioner_Sys/CMakeLists.txt    | 23 ++++----
+ packages/muelu/doc/Tutorial/src/CMakeLists.txt     | 41 +++++++-------
+ packages/muelu/test/navierstokes/CMakeLists.txt    | 17 +++---
+ packages/muelu/test/structure2D/CMakeLists.txt     | 62 ++++++++++++----------
+ packages/tpetra/core/test/CrsMatrix/CMakeLists.txt |  5 +-
+ packages/zoltan2/test/color/CMakeLists.txt         |  4 +-
+ 8 files changed, 100 insertions(+), 67 deletions(-)
+
+diff --git a/packages/belos/epetra/test/BlockGmres/CMakeLists.txt b/packages/belos/epetra/test/BlockGmres/CMakeLists.txt
+index a99168a..867281f 100644
+--- a/packages/belos/epetra/test/BlockGmres/CMakeLists.txt
++++ b/packages/belos/epetra/test/BlockGmres/CMakeLists.txt
+@@ -38,9 +38,12 @@ IF (${PACKAGE_NAME}_ENABLE_Triutils)
+     STANDARD_PASS_OUTPUT 
+     )
+ 
++#github move note:
++#removed copy of fidap036.hb since it was filtered out.
++#
+   TRIBITS_COPY_FILES_TO_BINARY_DIR(CopyTestBlockGmresFiles
+     SOURCE_DIR ${Belos_SOURCE_DIR}/epetra/example/BlockGmres
+-    SOURCE_FILES orsirr1.hb fidap036.hb
++    SOURCE_FILES orsirr1.hb
+     EXEDEPS bl_gmres_diag
+     )
+ 
+diff --git a/packages/belos/tpetra/test/BlockCG/CMakeLists.txt b/packages/belos/tpetra/test/BlockCG/CMakeLists.txt
+index 4d17473..5bdc985 100644
+--- a/packages/belos/tpetra/test/BlockCG/CMakeLists.txt
++++ b/packages/belos/tpetra/test/BlockCG/CMakeLists.txt
+@@ -39,16 +39,22 @@ ENDIF()
+ #  EXEDEPS Tpetra_BlockCG_complex_hb_test
+ #  )
+ 
++#github move note:
++#removed copy of bcsstk18.rsa since it was filtered out.
++#
+ TRIBITS_COPY_FILES_TO_BINARY_DIR(Tpetra_BlockCG_hb_CopyFiles1
+   SOURCE_DIR ${Belos_SOURCE_DIR}/tpetra/test/BlockCG
+-  SOURCE_FILES bcsstk17.rsa bcsstk18.rsa
++  SOURCE_FILES bcsstk17.rsa
+   EXEDEPS Tpetra_BlockCG_hb_test
+   # EXEDEPS Tpetra_BlockCG_hb_test Tpetra_BlockCG_hb_multiprec_test
+   )
+ 
++#github move note:
++#removed copy of bcsstk15.hb since it was filtered out.
++#
+ TRIBITS_COPY_FILES_TO_BINARY_DIR(Tpetra_BlockCG_hb_CopyFiles2
+   SOURCE_DIR ${Belos_SOURCE_DIR}/epetra/example/BlockCG
+-  SOURCE_FILES bcsstk14.hb bcsstk15.hb
++  SOURCE_FILES bcsstk14.hb
+   EXEDEPS Tpetra_BlockCG_hb_test
+   # EXEDEPS Tpetra_BlockCG_hb_test Tpetra_BlockCG_hb_multiprec_test
+   )
+diff --git a/packages/ml/test/MultiLevelPreconditioner_Sys/CMakeLists.txt b/packages/ml/test/MultiLevelPreconditioner_Sys/CMakeLists.txt
+index 86e87f1..7fa38a4 100644
+--- a/packages/ml/test/MultiLevelPreconditioner_Sys/CMakeLists.txt
++++ b/packages/ml/test/MultiLevelPreconditioner_Sys/CMakeLists.txt
+@@ -1,13 +1,16 @@
+ 
+ 
+-TRIBITS_ADD_EXECUTABLE_AND_TEST(
+-  MLP_Sys
+-  SOURCES MultiLevelPreconditioner_Sys.cpp
+-  NUM_MPI_PROCS 1
+-  COMM serial mpi
+-  )
++#github move note:
++#Disabled due to dependency on elasticity.dat which was filtered out.
++#TRIBITS_ADD_EXECUTABLE_AND_TEST(
++#  MLP_Sys
++#  SOURCES MultiLevelPreconditioner_Sys.cpp
++#  NUM_MPI_PROCS 1
++#  COMM serial mpi
++#  )
+ 
+-TRIBITS_COPY_FILES_TO_BINARY_DIR(MLP_Sys_Copy
+-  SOURCE_FILES c1.dat c2.dat c3.dat elasticity.dat
+-  EXEDEPS MLP_Sys
+-  )
++#
++#TRIBITS_COPY_FILES_TO_BINARY_DIR(MLP_Sys_Copy
++#  SOURCE_FILES c1.dat c2.dat c3.dat elasticity.dat
++#  EXEDEPS MLP_Sys
++#  )
+diff --git a/packages/muelu/doc/Tutorial/src/CMakeLists.txt b/packages/muelu/doc/Tutorial/src/CMakeLists.txt
+index 38fd916..56f3dbc 100644
+--- a/packages/muelu/doc/Tutorial/src/CMakeLists.txt
++++ b/packages/muelu/doc/Tutorial/src/CMakeLists.txt
+@@ -68,24 +68,29 @@ IF (${PACKAGE_NAME}_ENABLE_Amesos       AND
+     COMM mpi
+     )
+     
+-  TRIBITS_ADD_TEST(
+-    Challenge_XML
+-    NAME "Challenge_convectiondiffusion"
+-    ARGS "--globalNumDofs=16641 --nDofsPerNode=1 --solver=gmres --tol=1e-12 --xml=challenges/condif2d_reference.xml --problem=challenges/condif2d"
+-    NUM_MPI_PROCS 2
+-    COMM mpi
+-    ) 
+-    
+-  TRIBITS_ADD_TEST(
+-    Challenge_XML
+-    NAME "Challenge_structure"
+-    ARGS "--globalNumDofs=7020 --nDofsPerNode=2 --solver=cg --tol=1e-12 --xml=challenges/stru2d_reference.xml --problem=challenges/stru2d"
+-    NUM_MPI_PROCS 2
+-    COMM mpi
+-    )    
++#github move note:
++#removed copy of challenges/condif2d_A.txt and challenges/stru2d_A.txt
++#since they were filtered out. Disabled tests that depended on those
++#files. 
++#
++#  TRIBITS_ADD_TEST(
++#    Challenge_XML
++#    NAME "Challenge_convectiondiffusion"
++#    ARGS "--globalNumDofs=16641 --nDofsPerNode=1 --solver=gmres --tol=1e-12 --xml=challenges/condif2d_reference.xml --problem=challenges/condif2d"
++#    NUM_MPI_PROCS 2
++#    COMM mpi
++#    ) 
++#    
++#  TRIBITS_ADD_TEST(
++#    Challenge_XML
++#    NAME "Challenge_structure"
++#    ARGS "--globalNumDofs=7020 --nDofsPerNode=2 --solver=cg --tol=1e-12 --xml=challenges/stru2d_reference.xml --problem=challenges/stru2d"
++#    NUM_MPI_PROCS 2
++#    COMM mpi
++#    )    
+ 
+-  TRIBITS_COPY_FILES_TO_BINARY_DIR(userguide_challenge_cp
+-    SOURCE_FILES challenges/condif2d_A.txt challenges/condif2d_b.txt challenges/condif2d_ns.txt challenges/condif2d_reference.xml 
+-    challenges/stru2d_A.txt challenges/stru2d_b.txt challenges/stru2d_ns.txt challenges/stru2d_reference.xml
++TRIBITS_COPY_FILES_TO_BINARY_DIR(userguide_challenge_cp
++    SOURCE_FILES challenges/condif2d_b.txt challenges/condif2d_ns.txt challenges/condif2d_reference.xml 
++     challenges/stru2d_b.txt challenges/stru2d_ns.txt challenges/stru2d_reference.xml
+     )    
+ ENDIF()
+diff --git a/packages/muelu/test/navierstokes/CMakeLists.txt b/packages/muelu/test/navierstokes/CMakeLists.txt
+index 613245c..6589ef7 100644
+--- a/packages/muelu/test/navierstokes/CMakeLists.txt
++++ b/packages/muelu/test/navierstokes/CMakeLists.txt
+@@ -18,13 +18,18 @@ IF (${PACKAGE_NAME}_ENABLE_Epetra AND
+ 
+   IF(Trilinos_ENABLE_AztecOO)
+     # build only if AztecOO available, too
+-    TRIBITS_ADD_EXECUTABLE_AND_TEST(
+-      Navier2D_Epetra
+-      SOURCES Navier2D_Epetra.cpp
+-      COMM mpi
+-      )
++    #github move note:
++    #removed copy of A5932_re1000.txt since it was filtered out.
++    #Also Disabled test that depended on it.
++    #
++    #TRIBITS_ADD_EXECUTABLE_AND_TEST(
++    #  Navier2D_Epetra
++    #  SOURCES Navier2D_Epetra.cpp
++    #  COMM mpi
++    #  )
++
+     TRIBITS_COPY_FILES_TO_BINARY_DIR(Navier2D_cpdata
+-      SOURCE_FILES A5932_re1000.txt b5932_re1000.txt
++      SOURCE_FILES b5932_re1000.txt
+       )
+ 
+     # experimental tests (block operators)
+diff --git a/packages/muelu/test/structure2D/CMakeLists.txt b/packages/muelu/test/structure2D/CMakeLists.txt
+index 9a449f3..dc58fd2 100644
+--- a/packages/muelu/test/structure2D/CMakeLists.txt
++++ b/packages/muelu/test/structure2D/CMakeLists.txt
+@@ -16,35 +16,41 @@ IF (${PACKAGE_NAME}_ENABLE_Epetra AND
+     ${PACKAGE_NAME}_ENABLE_Ifpack AND
+     ${PACKAGE_NAME}_ENABLE_Amesos)
+ 
+-  TRIBITS_ADD_EXECUTABLE_AND_TEST(
+-    Structure2D_Test #FIXME: not the same name as the cpp file. Confusing
+-    SOURCES Structure2D_epetra.cpp
+-    COMM serial mpi
+-    )
+-
+-  IF(Trilinos_ENABLE_AztecOO)
+-    # build only if AztecOO available, too
+-    TRIBITS_ADD_EXECUTABLE_AND_TEST(
+-      Structure2D_MLmode_Epetra
+-      SOURCES Structure2D_MLmode_Epetra.cpp
+-      COMM serial mpi
+-      )
+-
+-    TRIBITS_ADD_EXECUTABLE_AND_TEST(
+-      Structure2D_Visualization
+-      SOURCES Structure2D_Visualization.cpp
+-      COMM serial mpi
+-      )
+-
+-    TRIBITS_ADD_EXECUTABLE_AND_TEST(
+-      Structure2D_Strided
+-      SOURCES Structure2D_Strided.cpp
+-      COMM serial mpi
+-      )
+-  ENDIF()
+-
++#github move note:
++#Disabling tests that depend on filtered files.
++#
++#  TRIBITS_ADD_EXECUTABLE_AND_TEST(
++#    Structure2D_Test #FIXME: not the same name as the cpp file. Confusing
++#    SOURCES Structure2D_epetra.cpp
++#    COMM serial mpi
++#    )
++#
++#  IF(Trilinos_ENABLE_AztecOO)
++#    # build only if AztecOO available, too
++#    TRIBITS_ADD_EXECUTABLE_AND_TEST(
++#      Structure2D_MLmode_Epetra
++#      SOURCES Structure2D_MLmode_Epetra.cpp
++#      COMM serial mpi
++#      )
++#
++#    TRIBITS_ADD_EXECUTABLE_AND_TEST(
++#      Structure2D_Visualization
++#      SOURCES Structure2D_Visualization.cpp
++#      COMM serial mpi
++#      )
++#
++#    TRIBITS_ADD_EXECUTABLE_AND_TEST(
++#      Structure2D_Strided
++#      SOURCES Structure2D_Strided.cpp
++#      COMM serial mpi
++#      )
++#  ENDIF()
++
++  #github move note:
++  #removed copy of stru2d_A.txt since it was filtered out.
++  #
+   TRIBITS_COPY_FILES_TO_BINARY_DIR(Structure2d_cp
+-    SOURCE_FILES stru2d_A.txt stru2d_b.txt stru2d_ns.txt nodes0.txt MueLu_Agg2VTK.py
++    SOURCE_FILES stru2d_b.txt stru2d_ns.txt nodes0.txt MueLu_Agg2VTK.py
+     )
+ 
+ ENDIF()
+diff --git a/packages/tpetra/core/test/CrsMatrix/CMakeLists.txt b/packages/tpetra/core/test/CrsMatrix/CMakeLists.txt
+index 7518451..63cfbce 100644
+--- a/packages/tpetra/core/test/CrsMatrix/CMakeLists.txt
++++ b/packages/tpetra/core/test/CrsMatrix/CMakeLists.txt
+@@ -121,10 +121,13 @@ TRIBITS_COPY_FILES_TO_BINARY_DIR(CrsMatrixCopyFiles1
+   EXEDEPS CrsMatrix_UnitTests
+   )
+ 
++#github move note:
++#removed copy of bcsstk15.hb since it was filtered out.
++# 
+ ASSERT_DEFINED(Anasazi_SOURCE_DIR)
+ TRIBITS_COPY_FILES_TO_BINARY_DIR(CrsTests_CopyFiles2
+   SOURCE_DIR ${Anasazi_SOURCE_DIR}/testmatrices
+-  SOURCE_FILES bcsstk14.hb bcsstk15.hb
++  SOURCE_FILES bcsstk14.hb
+   )
+ 
+ # This test only makes sense for > 1 processes.
+diff --git a/packages/zoltan2/test/color/CMakeLists.txt b/packages/zoltan2/test/color/CMakeLists.txt
+index 11ea4eb..d7ea68a 100644
+--- a/packages/zoltan2/test/color/CMakeLists.txt
++++ b/packages/zoltan2/test/color/CMakeLists.txt
+@@ -42,12 +42,14 @@ TRIBITS_ADD_TEST(
+ #  FAIL_REGULAR_EXPRESSION "FAIL"
+ #  )
+ 
++#github move note:
++#removed copy of bcsstk30.mtx since it was filtered out.
++#
+ # Command that copies files to the executable directory.
+ TRIBITS_COPY_FILES_TO_BINARY_DIR(copy_files_for_color_tests
+   SOURCE_FILES
+     simple.mtx
+     commanche_dual.mtx
+-    bcsstk30.mtx
+   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../data
+   DEST_DIR ${CMAKE_CURRENT_BINARY_DIR}
+ )
+-- 
+2.1.3
+
