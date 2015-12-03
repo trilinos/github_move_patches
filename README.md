@@ -17,3 +17,7 @@ same name as the branch they were applied to. It is expected that there will be
 duplication in these directories. That is acceptable to ensure it is obvious
 which patches were used and easy to apply them to a close branch when needed.
 
+If one of the packages that was split off into its own directory needs patches
+those patches should be put into a directory named <package>_<branch> so that
+they are separated from the Trilinos patches, but it is also clear which branch
+they should be applied to.
