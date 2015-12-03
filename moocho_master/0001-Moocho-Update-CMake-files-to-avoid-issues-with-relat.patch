@@ -1,0 +1,90 @@
+From 1536642ca98eec5375dfd89be66130f2315bd8c9 Mon Sep 17 00:00:00 2001
+From: Brent Perschbacher <bmpersc@sandia.gov>
+Date: Wed, 2 Dec 2015 12:15:33 -0700
+Subject: [PATCH] Moocho: Update CMake files to avoid issues with relative paths
+
+With Moocho broken out to its own repo it will likely be added back
+in via a symlink which apparently does not work well with relative
+paths of the form "${PACKAGE_SOURCE_DIR}/../<PATH>". The .. resolves
+to the parent of the actual dir instead of into the Trilinos repo.
+To solve this I changed all the places where this caused a build
+error to use cmake's get_filename_component call to get the absolute
+path of the given relative path and use that to define include dirs
+or paths to data files that are copied.
+---
+ .../CMakeLists.txt                                 |    7 +++++--
+ .../DiagonalTransientInversion/CMakeLists.txt      |    7 ++++---
+ .../NLPThyraEpetraAdvDiffReactOpt/CMakeLists.txt   |    6 ++++--
+ .../NLPThyraEpetraModelEval4DOpt/CMakeLists.txt    |    6 ++++--
+ 4 files changed, 17 insertions(+), 9 deletions(-)
+
+diff --git a/thyra/example/DiagonalQuadraticResponseOnlyOpt/CMakeLists.txt b/thyra/example/DiagonalQuadraticResponseOnlyOpt/CMakeLists.txt
+index aa98340..8d03e1e 100644
+--- a/thyra/example/DiagonalQuadraticResponseOnlyOpt/CMakeLists.txt
++++ b/thyra/example/DiagonalQuadraticResponseOnlyOpt/CMakeLists.txt
+@@ -5,8 +5,11 @@
+ #
+ 
+ 
+-SET(EPETRAEXT_DQROO_DIR
+-  ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evaluator/DiagonalQuadraticResponseOnlyOpt)
++GET_FILENAME_COMPONENT(EPETRAEXT_DQROO_DIR
++  ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evaluator/DiagonalQuadraticResponseOnlyOpt
++  ABSOLUTE
++)
++
+ 
+ SET(THYRA_DQROME_DIR
+   thyra/core/test/nonlinear/models)
+diff --git a/thyra/example/DiagonalTransientInversion/CMakeLists.txt b/thyra/example/DiagonalTransientInversion/CMakeLists.txt
+index 94af0a8..d822034 100644
+--- a/thyra/example/DiagonalTransientInversion/CMakeLists.txt
++++ b/thyra/example/DiagonalTransientInversion/CMakeLists.txt
+@@ -1,8 +1,9 @@
+ 
+ 
+-SET(EPETRAEXT_DT_DIR
+-  ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evaluator/DiagonalTransient)
+-
++GET_FILENAME_COMPONENT(EPETRAEXT_DT_DIR
++  ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evaluator/DiagonalTransient
++  ABSOLUTE
++)
+ 
+ TRIBITS_INCLUDE_DIRECTORIES(REQUIRED_DURING_INSTALLATION_TESTING ${EPETRAEXT_DT_DIR})
+ 
+diff --git a/thyra/example/NLPThyraEpetraAdvDiffReactOpt/CMakeLists.txt b/thyra/example/NLPThyraEpetraAdvDiffReactOpt/CMakeLists.txt
+index fb1b1c4..0b00ecc 100644
+--- a/thyra/example/NLPThyraEpetraAdvDiffReactOpt/CMakeLists.txt
++++ b/thyra/example/NLPThyraEpetraAdvDiffReactOpt/CMakeLists.txt
+@@ -1,7 +1,9 @@
+ 
+ 
+-SET(EPETRAEXT_GLPAPP_DIR ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evaluator/GLpApp)
+-
++GET_FILENAME_COMPONENT(EPETRAEXT_GLPAPP_DIR
++  ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evaluator/GLpApp
++  ABSOLUTE
++)
+ 
+ TRIBITS_INCLUDE_DIRECTORIES(
+   REQUIRED_DURING_INSTALLATION_TESTING 
+diff --git a/thyra/example/NLPThyraEpetraModelEval4DOpt/CMakeLists.txt b/thyra/example/NLPThyraEpetraModelEval4DOpt/CMakeLists.txt
+index 3b76ae5..fce31e8 100644
+--- a/thyra/example/NLPThyraEpetraModelEval4DOpt/CMakeLists.txt
++++ b/thyra/example/NLPThyraEpetraModelEval4DOpt/CMakeLists.txt
+@@ -1,7 +1,9 @@
+ 
+ 
+-SET(EPETRAEXT_4DOPT_DIR ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evaluator/4dopt)
+-
++GET_FILENAME_COMPONENT(EPETRAEXT_4DOPT_DIR
++  ${PACKAGE_SOURCE_DIR}/../epetraext/example/model_evaluator/4dopt
++  ABSOLUTE
++)
+ 
+ TRIBITS_INCLUDE_DIRECTORIES(REQUIRED_DURING_INSTALLATION_TESTING ${EPETRAEXT_4DOPT_DIR})
+ 
+-- 
+1.7.1
+
